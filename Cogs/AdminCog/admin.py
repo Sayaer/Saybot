@@ -1,17 +1,19 @@
 import discord
-import os
-
 from discord.ext.commands import Bot
-from dotenv import load_dotenv
 from discord.ext import commands
 
 
 def setup(bot):
     bot.add_cog(Admin(bot))
-    print('adding the cog')
+    print('adding the Admin cog')
 
 
 class Admin(commands.Cog):
+    """
+    This cog contains server-management and administration functionality,
+    it needs to be further developed for multi-server support.
+    """
+
     def __init__(self, bot: Bot):
         self.bot = bot
 
@@ -24,6 +26,9 @@ class Admin(commands.Cog):
     # @commands.command(name='hello')
     # async def hello(self, ctx):
     #   await ctx.send('Hey')
+    """
+    Manual command entries.
+    """
 
     @commands.command(name='create_channel', help='Creates a new channel.')
     @commands.has_permissions(manage_channels=True)
@@ -54,3 +59,31 @@ class Admin(commands.Cog):
         if existing_channel:
             print(f'Deleting channel: {channel_name}')
             await existing_channel.delete()
+
+    @commands.command(name='add_role', help='Add a role to a user')
+    @commands.has_permissions(manage_roles=True)
+    async def add_role(self, ctx, role_name, user: discord.Member = None):
+        """
+        Add a role to a user, defaults to user invoking if member is None
+        :param ctx:
+        :param role_name:
+        :param user:
+        :return:
+        """
+        # Need to check if role exists, then see if user already has role, catch any exceptions, then add the role
+
+    @commands.command(name='remove_role', help='Remove a role from a user')
+    @commands.has_permissions(manage_roles=True)
+    async def remove_role(self, ctx, role_name, user: discord.Member = None):
+        """
+        Remove a role from a user, defaults to user invoking if member is None
+        :param ctx:
+        :param role_name:
+        :param user:
+        :return:
+        """
+        if user is None:
+            user = ctx.author
+        await self.remove_role(ctx, user, role_name)
+
+
