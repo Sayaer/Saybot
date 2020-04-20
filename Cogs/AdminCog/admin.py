@@ -1,6 +1,10 @@
+import asyncio
+
 import discord
+from discord import client
 from discord.ext.commands import Bot
 from discord.ext import commands
+from loguru import logger
 
 
 def setup(bot):
@@ -85,5 +89,16 @@ class Admin(commands.Cog):
         if user is None:
             user = ctx.author
         await self.remove_role(ctx, user, role_name)
+
+    """
+    Automated management tasks
+    """
+    # This will need to be tested, if functional may only need minor modification to meet basic needs
+    @commands.Cog.listener
+    async def on_member_join(self, ctx, member: discord.member):
+        logger.add(f"Sleeping for 60 seconds then adding {member}to general chat")
+        await asyncio.sleep(60)
+        await ctx.add_role('visitor', member)
+        await ctx.move_to('channel', member)
 
 
